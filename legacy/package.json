@@ -1,0 +1,101 @@
+{
+  "name": "authsteem",
+  "version": "0.2.0",
+  "description": "Signer app for Steem",
+  "author": "ETY001 <work@akawa.ink> (https://github.com/ety001)",
+  "homepage": "https://auth.steem.fans",
+  "main": "electron-entry.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node start.js",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "test": "vue-cli-service test:unit",
+    "start-electron": "electron .",
+    "build-electron": "electron-builder build -wml",
+    "build-electron:mac": "electron-builder --mac",
+    "build-electron:win": "electron-builder --win",
+    "build-electron:linux": "electron-builder --linux",
+    "zip": "zip -r steemconnect-chrome.zip www && mv steemconnect-chrome.zip www",
+    "publish": "electron-builder build -wml --publish always",
+    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build"
+  },
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "buffer": "^6.0.3",
+    "core-js": "^3.47.0",
+    "crypto-browserify": "^3.12.1",
+    "dsteem": "^0.11.3",
+    "express": "^4.21.0",
+    "frameguard": "^3.1.0",
+    "helmet-csp": "^2.10.0",
+    "lodash": "^4.17.21",
+    "password-validator": "^5.3.0",
+    "process": "^0.11.10",
+    "query-string": "^6.14.1",
+    "regenerator-runtime": "^0.14.1",
+    "serve-static": "^1.16.0",
+    "steem-uri": "^0.1.1",
+    "stream-browserify": "^3.0.0",
+    "triplesec": "^4.0.3",
+    "url": "^0.11.4",
+    "url-parse": "^1.5.10",
+    "util": "^0.12.5",
+    "vm-browserify": "^1.1.2",
+    "vue": "^3.5.13",
+    "vue-i18n": "^10.0.4",
+    "vue-router": "^4.4.5",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-unit-jest": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/eslint-config-airbnb": "^7.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/vue3-jest": "^29.2.6",
+    "electron": "^35.7.5",
+    "electron-builder": "^26.0.12",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-vue": "^9.19.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.0",
+    "prettier": "^3.1.0",
+    "sass": "^1.69.0",
+    "sass-loader": "^13.3.0"
+  },
+  "contributors": [
+    "Fabien Marino <fabien@bonustrack.co> (https://github.com/bonustrack)",
+    "Wiktor Tkaczyński <wiktor.tkaczynski@gmail.com> (https://github.com/Sekhmet)",
+    "Johan Nordberg (https://github.com/jnordberg)",
+    "Nico Wehmöller (https://github.com/wehmoen)",
+    "Mahdi Yari (https://github.com/mahdiyari)",
+    "ETY001 (https://github.com/ety001)",
+    "Dhaka.witness (https://github.com/steemblocks)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steemfans/authsteem.git"
+  },
+  "bugs": {
+    "url": "https://github.com/steemfans/authsteem/issues"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "overrides": {
+    "webpack-dev-server": "^5.2.2",
+    "cross-spawn": "^7.0.6",
+    "postcss": "^8.4.49"
+  }
+}

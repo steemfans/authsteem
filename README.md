@@ -1,53 +1,43 @@
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/steemfans/authsteem/master/LICENSE)
-
 # AuthSteem
 
-> Signer app for Steem
+Refactored AuthSteem frontend (at repo root): **pnpm + React 18 + TypeScript + Vite + Zustand**.  
+Uses **@steemit/steem-js** (next) for Steem RPC and **@steemit/steem-uri@0.2.1** for signing URIs.  
+Web SPA only (no Chrome extension or Electron). Legacy Vue app remains in `legacy/`.
 
-## Usage
+## Setup
 
-``` bash
-# Install dependencies
-npm install
+From repo root:
 
-# Serve on localhost:8080
-npm run serve
-
-# Build for production
-npm run build
-
-# Build desktop apps
-npm run build-electron
+```bash
+pnpm install
+pnpm dev     # dev server
+pnpm build   # production build → dist/
+pnpm preview # serve dist/
 ```
 
-## Deploy Web Server by Docker
+## Structure (repo root)
 
-``` bash
-# clone
-git clone https://github.com/steemfans/authsteem.git
+- `src/lib/` – steem.ts (API, setNodeUrl, getAccountsCondenser, sign, broadcast), auth.ts (credentialsValid, getKeys), keychain.ts, keychain-crypto.ts (Web Crypto API), keychain-helpers.ts, steem-uri.ts
+- `src/stores/` – Zustand: settings, auth
+- `src/pages/` – Home, Dashboard, Import, Login, Sign, Settings, NotFound
+- `src/components/` – Layout (header + outlet)
+- `legacy/` – original Vue app (unchanged)
 
-cd authsteem
+## Docker (Alpine + nginx)
 
-# build docker image
-docker build --build-arg TAG=master -t authsteem .
+Build image and run:
 
-# deploy image
-docker run -itd \
-  --name authsteem \
-  --restart always \
-  -p 8080:80 \
-  authsteem
-
-##############
-
-# or you can use image which I build.
-docker pull steemfans/authsteem:latest
-
-# deploy image
-docker run -itd \
-  --name authsteem \
-  --restart always \
-  -p 8080:80 \
-  steemfans/authsteem:latest
-
+```bash
+docker build -t authsteem-web .
+docker run -p 8080:80 authsteem-web
 ```
+
+Serves the built static files from `dist/` with nginx; SPA fallback to `index.html` for history mode.
+
+## Differences from legacy
+
+- No Chrome extension or Electron; Web only.
+- State: Zustand instead of Vuex.
+- Steem: @steemit/steem-js instead of dsteem; condenser_api.get_accounts for account keys.
+- **Keychain encryption: Web Crypto API (PBKDF2 + AES-GCM)** instead of triplesec; only Web Crypto format is supported.
+- Same keychain localStorage key (`'keychain'`) for compatibility with legacy keychain.
