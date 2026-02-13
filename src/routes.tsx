@@ -6,6 +6,7 @@ import { Import } from '@/pages/Import'
 import { Login } from '@/pages/Login'
 import { Sign } from '@/pages/Sign'
 import { Settings } from '@/pages/Settings'
+import { BroadcastOp } from '@/pages/BroadcastOp'
 import { NotFound } from '@/pages/NotFound'
 import { useAuthStore } from '@/stores/auth'
 import { hasAccounts } from '@/lib/keychain'
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       },
       { path: 'sign/*', element: <Sign /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'dev-tools/broadcast-op', element: <BroadcastOp /> },
       { path: '*', element: <NotFound /> },
     ],
   },

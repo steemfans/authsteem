@@ -1,8 +1,10 @@
 import { Routes } from './routes'
-import './App.css'
+import { I18nProvider } from './i18n'
 
-function App() {
-  return <Routes />
+export default function App() {
+  return (
+    <I18nProvider>
+      <Routes />
+    </I18nProvider>
+  )
 }
-
-export default App

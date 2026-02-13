@@ -55,3 +55,13 @@ export async function resolveCallback(callbackUrl: string, ctx: TransactionConfi
   const steemUri = await import('@steemit/steem-uri')
   return steemUri.resolveCallback(callbackUrl, ctx)
 }
+
+/** Encode operations array to steem URI (for DevTools / broadcast-op). */
+export async function encodeOps(
+  ops: [string, Record<string, unknown>][],
+  params?: Record<string, unknown>,
+  protocol: 'steem' | 'web+steem' | 'ext+steem' = 'web+steem'
+): Promise<string> {
+  const steemUri = await import('@steemit/steem-uri')
+  return steemUri.encodeOps(ops as never, params ?? {}, protocol)
+}
