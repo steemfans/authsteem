@@ -1,7 +1,31 @@
 ---
 name: AuthSteem Legacy 重构计划
 overview: 将 authsteem/legacy（Vue 3 + Vuex + dsteem + Vue CLI）重构为 pnpm + React + TypeScript + Vite + shadcn/ui 技术栈，通过 pnpm 安装 steem-js 的 next 版本作为 Steem RPC SDK；状态管理使用 Zustand；Docker 使用 Alpine + nginx 提供编译后的静态文件；仅保留浏览器前端签名能力，移除全部 OAuth 相关内容；暂不考虑 Chrome 扩展与 Electron。
-todos: []
+todos:
+  - id: shadcn
+    content: 接入 shadcn/ui（Tailwind + Radix 组件）
+    status: completed
+  - id: dev-tools
+    content: 实现 /dev-tools/broadcast-op 路由与 BroadcastOp 页面
+    status: completed
+  - id: sign-ops
+    content: Sign 页按 operations.json schema 展示 Operation 列表
+    status: completed
+  - id: legacy-uri
+    content: （可选）legacyUriToParsedSteemUri + operations.json 兼容旧链接
+    status: cancelled
+  - id: ui-shadcn
+    content: 用 shadcn 替换现有简单 UI（Header/Footer/Modal/Operation 等）
+    status: completed
+  - id: i18n
+    content: 国际化（react-i18next 或 JSON + useTranslation）
+    status: completed
+  - id: e2e
+    content: 端到端与回归测试
+    status: completed
+  - id: docs
+    content: 文档补充（环境变量、与 legacy 差异、steem-js 版本）
+    status: completed
 isProject: false
 ---
 
@@ -176,7 +200,7 @@ authsteem/
 3. **核心页面迁移（按优先级）**
   - **Sign（核心）**：
     - 从 URL（`/sign/*` + querystring）构造待解析的 `steem:` / `web+steem:` / `ext+steem:` 链接并 `decode()`。
-    - （可选）兼容 legacy 旧格式链接：移植 `legacyUriToParsedSteemUri` + `operations.json`。
+    - 不实现 legacy 旧格式链接兼容（legacyUriToParsedSteemUri）。
     - 展示 Operation 列表（按 `operations.json` schema 渲染，替代直接 JSON dump）。
     - `resolveTransaction` → 选择 signer（URL 指定 signer 或用户选择）→ 使用用户输入的 WIF 或已解锁的缓存 keys 签名。
     - `no_broadcast` 支持：仅签名返回 signature；否则 broadcast 并展示 txid。
@@ -235,3 +259,25 @@ authsteem/
 7. i18n、**Docker（Alpine + nginx 提供 dist 静态文件）**、测试与文档。
 
 本计划仅覆盖 Web 单页；Chrome 扩展与 Electron 暂不实施。
+
+---
+
+## 六、未完成任务检查清单（当前状态）
+
+**已完成 ✅**
+
+| 项 | 说明 |
+|----|------|
+| 阶段1 | Vite+React+TS 工程、steem-js next、lib/steem.ts（Api、setNodeUrl、condenser get_accounts、getConfig、getDynamicGlobalProperties） |
+| 阶段1 | 认证与密钥（auth.ts：credentialsValid、getKeys）、keychain（Web Crypto API）、resolveTransaction + steem-uri 封装、sign + broadcast |
+| 阶段2 | Zustand（Settings、Auth）、路由（/、/dashboard、/import、/login、/sign/*、/settings、/dev-tools/broadcast-op、404）、Sign 页基础流程（decode→resolve→sign→broadcast、callback）、Import/Login、Settings 页、**DevTools/BroadcastOp 页** |
+| 阶段3 | Docker（Alpine builder + nginx 运行阶段、SPA fallback） |
+| 文档 | README 基础说明 |
+| **shadcn/ui** | Tailwind v4 + @tailwindcss/vite；shadcn 组件（Button, Input, Card, Select, Label, Checkbox）；components.json、src/lib/utils.ts (cn)、src/components/ui/* |
+| **用 shadcn 替换 UI** | Layout、Home、Login、Import、Settings、Sign、Dashboard、NotFound、BroadcastOp 已使用 Card/Button/Input 等；Header 含 Dev Tools 链接。 |
+| **Sign 页 Operation 列表** | 按 `operations.json` schema 展示；`OperationItem` + `OperationValue` 支持 account/amount/bool/json/time 等类型；VESTS→SP 转换、时间格式化。 |
+| **国际化 (i18n)** | 轻量 JSON + useTranslation hook；`src/i18n/translations.json`（en/zh）；`I18nProvider` 包裹应用；所有页面使用 `t()` 函数；Settings 可切换语言。 |
+| **文档** | README 更新完整：项目结构、路由表、Steem SDK 使用说明（condenser_api）、加密算法、i18n、Docker、与 legacy 差异表、开发说明。 |
+| **测试** | Vitest + @testing-library/react；`src/test/` 下单元测试：keychain、keychain-crypto、i18n、Home 页；`pnpm test:run` 通过（10 tests）。 |
+
+**所有任务已完成 ✅**

@@ -5,8 +5,13 @@ import { broadcastTransaction } from '@/lib/steem'
 import { useAuthStore } from '@/stores/auth'
 import { getAuthority } from '@/lib/auth'
 import type { KeysMap } from '@/lib/auth'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { OperationItem } from '@/components/Operation'
+import { useTranslation } from '@/i18n'
 
 export function Sign() {
+  const { t } = useTranslation()
   const params = useParams()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -83,58 +88,86 @@ export function Sign() {
 
   if (!uriValid || !parsed) {
     return (
-      <div>
-        <h1>Confirm transaction</h1>
-        <p style={{ color: 'red' }}>Invalid signing URL.</p>
-        <button type="button" onClick={() => navigate('/')}>
-          Back
-        </button>
+      <div className="max-w-lg mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('sign.title')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-destructive">{t('sign.invalidUrl')}</p>
+            <Button type="button" variant="outline" onClick={() => navigate('/')}>
+              {t('common.backToHome')}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   if (txId && !failed) {
     return (
-      <div>
-        <h1>Transaction broadcast</h1>
-        <p>Transaction ID: {txId}</p>
-        <button type="button" onClick={() => navigate('/')}>
-          Done
-        </button>
+      <div className="max-w-lg mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('sign.broadcastTitle')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm break-all">{t('sign.txId', { id: txId })}</p>
+            <Button type="button" onClick={() => navigate('/')}>
+              {t('common.done')}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
+  const title = authority
+    ? t('sign.titleWithAuthority', { authority })
+    : t('sign.title')
+
   return (
-    <div>
-      <h1>Confirm transaction {authority ? `(${authority})` : ''}</h1>
-      {parsed?.tx && (
-        <pre style={{ fontSize: 12, overflow: 'auto', maxHeight: 300 }}>
-          {JSON.stringify(parsed.tx, null, 2)}
-        </pre>
-      )}
-      {!username || !hasRequiredKey ? (
-        <p>
-          <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
-            Continue to login
-          </Link>
-        </p>
-      ) : (
-        <>
-          {parsed.params?.callback && (
-            <p>You will be redirected after signing.</p>
+    <div className="max-w-lg mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {parsed?.tx?.operations && Array.isArray(parsed.tx.operations) && parsed.tx.operations.length > 0 ? (
+            <div className="space-y-3">
+              {parsed.tx.operations.map((op: [string, Record<string, unknown>], i: number) => (
+                <OperationItem key={i} operation={op} />
+              ))}
+            </div>
+          ) : parsed?.tx ? (
+            <pre className="text-xs overflow-auto max-h-[300px] p-3 rounded-md bg-muted">
+              {JSON.stringify(parsed.tx, null, 2)}
+            </pre>
+          ) : null}
+          {!username || !hasRequiredKey ? (
+            <Button asChild variant="default">
+              <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
+                {t('sign.continueToLogin')}
+              </Link>
+            </Button>
+          ) : (
+            <>
+              {parsed.params?.callback && (
+                <p className="text-sm text-muted-foreground">{t('sign.callbackNotice')}</p>
+              )}
+              {error != null && <p className="text-destructive text-sm">{error}</p>}
+              <div className="flex gap-2">
+                <Button type="button" onClick={handleApprove} disabled={loading}>
+                  {parsed.params?.no_broadcast ? t('common.sign') : t('common.approve')}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleReject}>
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </>
           )}
-          {error != null && <p style={{ color: 'red' }}>{error}</p>}
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" onClick={handleApprove} disabled={loading}>
-              {parsed.params?.no_broadcast ? 'Sign' : 'Approve'}
-            </button>
-            <button type="button" onClick={handleReject}>
-              Cancel
-            </button>
-          </div>
-        </>
-      )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
