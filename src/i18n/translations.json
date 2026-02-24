@@ -27,6 +27,7 @@
       "description": "Unlock an account from your keychain",
       "usernameLabel": "Steem username",
       "usernamePlaceholder": "Select account",
+      "selectUser": "Select a user",
       "passwordLabel": "Keychain password",
       "loggingIn": "Logging in…",
       "errorRequired": "Username and keychain password are required.",
@@ -92,6 +93,7 @@
       "title": "Broadcast Op Test",
       "description": "Dev tool to build a signing link for an operation and open it in a new tab.",
       "selectOp": "Select OP",
+      "selectOneOp": "Select an operation",
       "openSign": "Open sign page",
       "opening": "Opening…"
     },
@@ -131,6 +133,7 @@
       "description": "解锁钥匙串中的账户",
       "usernameLabel": "Steem 用户名",
       "usernamePlaceholder": "选择账户",
+      "selectUser": "选择一个用户",
       "passwordLabel": "钥匙串密码",
       "loggingIn": "正在登录…",
       "errorRequired": "用户名和钥匙串密码为必填项。",
@@ -196,6 +199,7 @@
       "title": "广播操作测试",
       "description": "开发工具：构建操作签名链接并在新标签页中打开。",
       "selectOp": "选择操作",
+      "selectOneOp": "选择一项操作",
       "openSign": "打开签名页",
       "opening": "正在打开…"
     },

@@ -106,11 +106,17 @@ export function BroadcastOp() {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="op">{t('broadcastOp.selectOp')}</Label>
-              <Select value={op} onValueChange={handleOpChange}>
+              <Select
+                value={op || '__none'}
+                onValueChange={(v) => handleOpChange(v === '__none' ? '' : v)}
+              >
                 <SelectTrigger id="op">
                   <SelectValue placeholder={t('broadcastOp.selectOp')} />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__none" className="text-muted-foreground">
+                    {t('broadcastOp.selectOneOp')}
+                  </SelectItem>
                   {opKeys.map((key) => (
                     <SelectItem key={key} value={key}>
                       {operations[key].name} ({key})

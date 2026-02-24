@@ -76,11 +76,17 @@ export function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">{t('login.usernameLabel')}</Label>
-              <Select value={username} onValueChange={setUsername}>
+              <Select
+                value={username || '__none'}
+                onValueChange={(v) => setUsername(v === '__none' ? '' : v)}
+              >
                 <SelectTrigger id="username">
                   <SelectValue placeholder={t('login.usernamePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__none" className="text-muted-foreground">
+                    {t('login.selectUser')}
+                  </SelectItem>
                   {keychainUsers.map((u) => (
                     <SelectItem key={u} value={u}>
                       {u}
