@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { decode, resolveTransaction, resolveCallback, type ParsedSteemUri } from '@/lib/steem-uri'
+import { isValidSignPath } from '@/lib/sign-path'
 import { broadcastTransaction } from '@/lib/steem'
 import { useAuthStore } from '@/stores/auth'
 import { getAuthority } from '@/lib/auth'
 import type { KeysMap } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { OperationItem } from '@/components/Operation'
 import { useTranslation } from '@/i18n'
 
@@ -27,9 +27,17 @@ export function Sign() {
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const uri = `steem://sign/${pathMatch}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+  const pathSafe = isValidSignPath(pathMatch)
+  const uri = pathSafe
+    ? `steem://sign/${pathMatch}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+    : ''
 
   useEffect(() => {
+    if (!pathSafe || !uri) {
+      setParsed(null)
+      setUriValid(false)
+      return
+    }
     let cancelled = false
     decode(uri)
       .then((p) => {
@@ -47,7 +55,7 @@ export function Sign() {
     return () => {
       cancelled = true
     }
-  }, [uri])
+  }, [uri, pathSafe])
 
   const hasRequiredKey = username && ((keys as KeysMap)[authority as keyof KeysMap] ?? keys.active)
 
@@ -88,36 +96,28 @@ export function Sign() {
 
   if (!uriValid || !parsed) {
     return (
-      <div className="max-w-lg mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('sign.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-destructive">{t('sign.invalidUrl')}</p>
-            <Button type="button" variant="outline" onClick={() => navigate('/')}>
-              {t('common.backToHome')}
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
+        <div className="leading-none font-semibold">{t('sign.title')}</div>
+        <div className="space-y-3">
+          <p className="text-destructive">{t('sign.invalidUrl')}</p>
+          <Button type="button" variant="outline" onClick={() => navigate('/')}>
+            {t('common.backToHome')}
+          </Button>
+        </div>
       </div>
     )
   }
 
   if (txId && !failed) {
     return (
-      <div className="max-w-lg mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('sign.broadcastTitle')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm break-all">{t('sign.txId', { id: txId })}</p>
-            <Button type="button" onClick={() => navigate('/')}>
-              {t('common.done')}
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
+        <div className="leading-none font-semibold">{t('sign.broadcastTitle')}</div>
+        <div className="space-y-3">
+          <p className="text-sm break-all">{t('sign.txId', { id: txId })}</p>
+          <Button type="button" onClick={() => navigate('/')}>
+            {t('common.done')}
+          </Button>
+        </div>
       </div>
     )
   }
@@ -127,47 +127,43 @@ export function Sign() {
     : t('sign.title')
 
   return (
-    <div className="max-w-lg mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {parsed?.tx?.operations && Array.isArray(parsed.tx.operations) && parsed.tx.operations.length > 0 ? (
-            <div className="space-y-3">
-              {parsed.tx.operations.map((op: [string, Record<string, unknown>], i: number) => (
-                <OperationItem key={i} operation={op} />
-              ))}
+    <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
+      <div className="leading-none font-semibold">{title}</div>
+      <div className="space-y-4">
+        {parsed?.tx?.operations && Array.isArray(parsed.tx.operations) && parsed.tx.operations.length > 0 ? (
+          <div className="space-y-3">
+            {parsed.tx.operations.map((op: [string, Record<string, unknown>], i: number) => (
+              <OperationItem key={i} operation={op} />
+            ))}
+          </div>
+        ) : parsed?.tx ? (
+          <pre className="text-xs overflow-auto max-h-[300px] p-3 rounded-md bg-muted">
+            {JSON.stringify(parsed.tx, null, 2)}
+          </pre>
+        ) : null}
+        {!username || !hasRequiredKey ? (
+          <Button asChild variant="default">
+            <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
+              {t('sign.continueToLogin')}
+            </Link>
+          </Button>
+        ) : (
+          <>
+            {parsed.params?.callback && (
+              <p className="text-sm text-muted-foreground">{t('sign.callbackNotice')}</p>
+            )}
+            {error != null && <p className="text-destructive text-sm">{error}</p>}
+            <div className="flex gap-2">
+              <Button type="button" onClick={handleApprove} disabled={loading}>
+                {parsed.params?.no_broadcast ? t('common.sign') : t('common.approve')}
+              </Button>
+              <Button type="button" variant="outline" onClick={handleReject}>
+                {t('common.cancel')}
+              </Button>
             </div>
-          ) : parsed?.tx ? (
-            <pre className="text-xs overflow-auto max-h-[300px] p-3 rounded-md bg-muted">
-              {JSON.stringify(parsed.tx, null, 2)}
-            </pre>
-          ) : null}
-          {!username || !hasRequiredKey ? (
-            <Button asChild variant="default">
-              <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
-                {t('sign.continueToLogin')}
-              </Link>
-            </Button>
-          ) : (
-            <>
-              {parsed.params?.callback && (
-                <p className="text-sm text-muted-foreground">{t('sign.callbackNotice')}</p>
-              )}
-              {error != null && <p className="text-destructive text-sm">{error}</p>}
-              <div className="flex gap-2">
-                <Button type="button" onClick={handleApprove} disabled={loading}>
-                  {parsed.params?.no_broadcast ? t('common.sign') : t('common.approve')}
-                </Button>
-                <Button type="button" variant="outline" onClick={handleReject}>
-                  {t('common.cancel')}
-                </Button>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+          </>
+        )}
+      </div>
     </div>
   )
 }

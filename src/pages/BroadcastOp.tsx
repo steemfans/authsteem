@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { encodeOps } from '@/lib/steem-uri'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -35,6 +34,7 @@ function getDefaultValue(def: unknown, type: string): string | number | boolean 
 
 export function BroadcastOp() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const opKeys = useMemo(() => Object.keys(operations), [])
   const [op, setOp] = useState<string>('')
   const [formData, setFormData] = useState<Record<string, string | number | boolean>>({})
@@ -89,8 +89,7 @@ export function BroadcastOp() {
       const ops: [string, Record<string, unknown>][] = [[op, opDetail]]
       const fullUri = await encodeOps(ops)
       const pathPart = fullUri.replace(/^[^:]+:\/\//, '')
-      const signUrl = `${window.location.origin}/${pathPart}`
-      window.open(signUrl, '_blank')
+      navigate('/' + pathPart)
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -98,14 +97,13 @@ export function BroadcastOp() {
   }
 
   return (
-    <div className="container max-w-lg mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('broadcastOp.title')}</CardTitle>
-          <CardDescription>{t('broadcastOp.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-2xl mx-auto w-full p-4 flex flex-col gap-6">
+      <div>
+        <div className="leading-none font-semibold">{t('broadcastOp.title')}</div>
+        <p className="text-muted-foreground text-sm mt-2">{t('broadcastOp.description')}</p>
+      </div>
+      <div>
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="op">{t('broadcastOp.selectOp')}</Label>
               <Select value={op} onValueChange={handleOpChange}>
@@ -165,8 +163,7 @@ export function BroadcastOp() {
               </>
             )}
           </form>
-        </CardContent>
-      </Card>
+      </div>
       <p className="mt-4 text-center text-sm text-muted-foreground">
         <Link to="/" className="underline">
           {t('common.backToHome')}
