@@ -1,45 +1,26 @@
 import { Link } from 'react-router-dom'
-import { useAuthStore } from '@/stores/auth'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/i18n'
 
 export function Home() {
   const { t } = useTranslation()
-  const username = useAuthStore((s) => s.username)
 
   return (
-    <div className="max-w-xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('home.title')}</CardTitle>
-          <CardDescription>{t('home.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {username ? (
-            <>
-              <p className="text-sm">
-                {t('home.loggedInAs', { username })}
-              </p>
-              <Button asChild variant="default">
-                <Link to="/dashboard">{t('home.goToDashboard')}</Link>
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-muted-foreground">{t('home.importOrLogin')}</p>
-              <div className="flex gap-2">
-                <Button asChild>
-                  <Link to="/import">{t('common.import')}</Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <Link to="/login">{t('common.login')}</Link>
-                </Button>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+    <div className="w-full max-w-xl mx-auto text-center flex flex-col items-center justify-center">
+      <img
+        src="/icon.png"
+        alt="AuthSteem"
+        className="w-16 h-16 md:w-20 md:h-20 mb-4 object-contain"
+      />
+      <h4 className="text-lg font-medium text-muted-foreground mb-4">{t('home.title')}</h4>
+      <h1 className="text-3xl md:text-4xl font-semibold mb-6">{t('home.heroTitle')}</h1>
+      <p className="text-muted-foreground mb-8 max-w-md">
+        {t('home.heroDescription')}
+      </p>
+      <nav className="mt-8 flex gap-4 text-sm text-muted-foreground">
+        <Link to="/login" className="hover:text-foreground">{t('common.login')}</Link>
+        <Link to="/settings" className="hover:text-foreground">{t('nav.settings')}</Link>
+        <Link to="/dev-tools/broadcast-op" className="hover:text-foreground">{t('nav.devTools')}</Link>
+      </nav>
     </div>
   )
 }

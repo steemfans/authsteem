@@ -1,8 +1,8 @@
+import { Link } from 'react-router-dom'
 import { useSettingsStore } from '@/stores/settings'
 import { useTranslation } from '@/i18n'
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -40,14 +40,13 @@ export function Settings() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.title')}</CardTitle>
-          <CardDescription>{t('settings.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
+      <div>
+        <div className="leading-none font-semibold">{t('settings.title')}</div>
+        <p className="text-muted-foreground text-sm mt-2">{t('settings.description')}</p>
+      </div>
+      <div>
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="address">{t('settings.addressLabel')}</Label>
               <Input
@@ -92,8 +91,12 @@ export function Settings() {
             </div>
             <Button type="submit">{t('settings.save')}</Button>
           </form>
-        </CardContent>
-      </Card>
+      </div>
+      <p className="mt-4 text-center text-sm">
+        <Link to="/" className="text-muted-foreground hover:underline">
+          {t('common.backToHome')}
+        </Link>
+      </p>
     </div>
   )
 }

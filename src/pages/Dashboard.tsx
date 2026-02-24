@@ -1,5 +1,4 @@
 import { useAuthStore } from '@/stores/auth'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTranslation } from '@/i18n'
 
 export function Dashboard() {
@@ -8,20 +7,18 @@ export function Dashboard() {
   const account = useAuthStore((s) => s.account)
 
   return (
-    <div className="max-w-xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('dashboard.title')}</CardTitle>
-          <CardDescription>{t('dashboard.welcome', { username: username ?? '' })}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {account && (
-            <pre className="text-xs overflow-auto max-h-[300px] p-3 rounded-md bg-muted">
-              {JSON.stringify(account, null, 2)}
-            </pre>
-          )}
-        </CardContent>
-      </Card>
+    <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
+      <div>
+        <div className="leading-none font-semibold">{t('dashboard.title')}</div>
+        <p className="text-muted-foreground text-sm mt-2">{t('dashboard.welcome', { username: username ?? '' })}</p>
+      </div>
+      <div>
+        {account && (
+          <pre className="text-xs overflow-auto max-h-[300px] p-3 rounded-md bg-muted">
+            {JSON.stringify(account, null, 2)}
+          </pre>
+        )}
+      </div>
     </div>
   )
 }

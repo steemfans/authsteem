@@ -4,18 +4,19 @@ import './index.css'
 import App from './App.tsx'
 import { useSettingsStore } from './stores/settings'
 
-// Load settings and dynamic global properties before rendering (so Layout/Home can use RPC)
-async function init() {
+// Load settings and dynamic global properties in background (do not block first paint)
+function init() {
   const loadSettings = useSettingsStore.getState().loadSettings
   const getDynamicGlobalProperties = useSettingsStore.getState().getDynamicGlobalProperties
-  await loadSettings()
-  await getDynamicGlobalProperties()
+  loadSettings()
+    .then(() => getDynamicGlobalProperties())
+    .catch((err) => console.error('Init failed:', err))
 }
 
-init().then(() => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  )
-})
+// Render immediately so the page is never blank (e.g. when RPC is slow or blocked in embedded browser)
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+init()
