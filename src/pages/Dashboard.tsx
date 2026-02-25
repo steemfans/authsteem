@@ -231,11 +231,11 @@ export function Dashboard() {
                   </tr>
                 </tbody>
               </table>
-              {vestingShares && typeof vestingShares === 'string' && (
+              {typeof vestingShares === 'string' && vestingShares ? (
                 <p className="mt-2 text-xs text-muted-foreground">
                   vesting_shares: <span className="font-mono">{vestingShares}</span>
                 </p>
-              )}
+              ) : null}
             </div>
           </div>
 

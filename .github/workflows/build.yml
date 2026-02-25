@@ -14,12 +14,9 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Guess tag for Docker images
-        id: prepare
-        uses: jupyter-naas/docker-smart-tag-action@1.0.0
-        with:
-          docker_image: steemfans/authsteem
-          default_branch: ${{ github.event.repository.default_branch }}
+        name: Set short SHA
+        id: vars
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -34,11 +31,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v5
+        id: build
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.prepare.outputs.tag }}
+          tags: |
+            steemfans/authsteem:latest
+            steemfans/authsteem:latest-${{ steps.vars.outputs.short_sha }}
       -
         name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: echo ${{ steps.build.outputs.digest }}
