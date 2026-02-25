@@ -61,10 +61,19 @@ export async function signTransaction(trx: unknown, keys: string[]): Promise<unk
   return s.auth.signTransaction(trx, keys)
 }
 
-/** Broadcast already-signed transaction. */
-export async function broadcastTransaction(signedTx: unknown): Promise<unknown> {
+/** Node response for broadcast_transaction_synchronous (transaction id, block number, etc.). */
+export interface BroadcastResult {
+  id?: string
+  block_num?: number
+  txn_num?: number
+  [key: string]: unknown
+}
+
+/** Broadcast already-signed transaction using broadcast_transaction_synchronous so the node returns id, block_num, txn_num. */
+export async function broadcastTransaction(signedTx: unknown): Promise<BroadcastResult> {
   const s = await getSteem()
-  return (s.api as { broadcastTransactionAsync?: (tx: unknown) => Promise<unknown> }).broadcastTransactionAsync?.(signedTx)
+  const result = await (s.api as { broadcastTransactionSynchronousWithAsync: (options: { trx: unknown }) => Promise<unknown> }).broadcastTransactionSynchronousWithAsync({ trx: signedTx })
+  return (result != null && typeof result === 'object' ? result : {}) as BroadcastResult
 }
 
 /** Get steem api singleton for direct use (e.g. getBlockAsync). */

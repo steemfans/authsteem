@@ -26,21 +26,29 @@ export function OperationItem({ operation }: OperationItemProps) {
           {meta?.name ?? opName}
         </h4>
       </div>
-      <div className="px-3 py-2 space-y-2">
-        {Object.entries(opData).map(([key, value]) => {
-          const fieldSchema = schema[key] ?? {}
-          const label = (fieldSchema as { name?: string }).name ?? key
-          return (
-            <p key={key} className="text-sm m-0">
-              <span className="font-medium block text-muted-foreground mb-0.5">{label}</span>
-              <OperationValue
-                value={value}
-                schema={fieldSchema}
-                username={username}
-              />
-            </p>
-          )
-        })}
+      <div className="px-3 py-2">
+        <table className="w-full text-sm border-collapse">
+          <tbody>
+            {Object.entries(opData).map(([key, value]) => {
+              const fieldSchema = schema[key] ?? {}
+              const label = (fieldSchema as { name?: string }).name ?? key
+              return (
+                <tr key={key} className="border-b border-border/50 last:border-b-0">
+                  <td className="py-2 pr-4 align-top w-[1%] whitespace-nowrap text-xs font-medium text-muted-foreground">
+                    {label}
+                  </td>
+                  <td className="py-2 align-top text-foreground text-center">
+                    <OperationValue
+                      value={value}
+                      schema={fieldSchema}
+                      username={username}
+                    />
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )

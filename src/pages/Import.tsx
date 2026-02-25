@@ -43,6 +43,7 @@ function FieldLabelWithHint({
         <TooltipTrigger asChild>
           <button
             type="button"
+            tabIndex={-1}
             className="inline-flex text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded p-0.5"
             aria-label={hint}
           >
@@ -76,14 +77,14 @@ export function Import() {
     !storeAccount ||
     (keychainPassword === keychainConfirm && keychainPassword.length >= 8 && keychainStrongEnough)
 
-  async function doLogin(user: string, pwd: string) {
+  async function doLogin(user: string, pwd: string): Promise<boolean> {
     const keys = await getKeys(user, pwd)
     if (authority && !keys[authority as keyof typeof keys]) {
       setError(t('import.errorAuthority', { authority }))
-      return
+      return false
     }
     await login(user, keys)
-    navigate('/')
+    return true
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -120,8 +121,8 @@ export function Import() {
         const encrypted = await encryptKeys(keys, keychainPassword)
         addToKeychain(username.trim(), encrypted)
       }
-      await doLogin(username.trim(), password)
-      navigate('/')
+      const ok = await doLogin(username.trim(), password)
+      if (ok) navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : t('import.errorSave'))
     }
@@ -221,7 +222,7 @@ export function Import() {
             )}
             {error && <p className="text-destructive text-sm">{error}</p>}
             <Button type="submit" disabled={loading || !keychainReady} className="w-full">
-              {t('common.getStarted')}
+              {t('import.importAndLogin')}
             </Button>
           </form>
           <p className="text-center text-sm text-muted-foreground">
