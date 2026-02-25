@@ -6,6 +6,7 @@ import { broadcastTransaction } from '@/lib/steem'
 import { useAuthStore } from '@/stores/auth'
 import { getAuthority } from '@/lib/auth'
 import type { KeysMap } from '@/lib/auth'
+import { CheckCircle, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { OperationItem } from '@/components/Operation'
 import { useTranslation } from '@/i18n'
@@ -24,6 +25,7 @@ export function Sign() {
   const [uriValid, setUriValid] = useState(true)
   const [loading, setLoading] = useState(false)
   const [txId, setTxId] = useState<string | null>(null)
+  const [blockNum, setBlockNum] = useState<number | null>(null)
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -65,11 +67,13 @@ export function Sign() {
     setFailed(false)
     setError(null)
     setTxId(null)
+    setBlockNum(null)
     try {
       const tx = await resolveTransaction(parsed, username)
       const signedTx = await signTx(tx, authority)
-      const result = await broadcastTransaction(signedTx) as { id?: string; block_num?: number; txn_num?: number }
+      const result = await broadcastTransaction(signedTx)
       setTxId(result?.id ?? null)
+      setBlockNum(result?.block_num ?? null)
       setFailed(false)
       const callbackUrl = parsed.params?.callback as string | undefined
       if (callbackUrl && typeof callbackUrl === 'string') {
@@ -112,8 +116,14 @@ export function Sign() {
     return (
       <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
         <div className="leading-none font-semibold">{t('sign.broadcastTitle')}</div>
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div className="flex items-center justify-center">
+            <CheckCircle className="size-16 text-green-600 dark:text-green-400" aria-hidden />
+          </div>
           <p className="text-sm break-all">{t('sign.txId', { id: txId })}</p>
+          {blockNum != null && (
+            <p className="text-sm text-muted-foreground">{t('sign.blockNum', { block: blockNum })}</p>
+          )}
           <Button type="button" onClick={() => navigate('/')}>
             {t('common.done')}
           </Button>
@@ -142,17 +152,27 @@ export function Sign() {
           </pre>
         ) : null}
         {!username || !hasRequiredKey ? (
-          <Button asChild variant="default">
-            <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
-              {t('sign.continueToLogin')}
-            </Link>
-          </Button>
+          <div className="flex gap-2 flex-wrap">
+            <Button asChild variant="default">
+              <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
+                {t('sign.continueToLogin')}
+              </Link>
+            </Button>
+            <Button type="button" variant="outline" onClick={() => navigate(-1)}>
+              {t('common.back')}
+            </Button>
+          </div>
         ) : (
           <>
             {parsed.params?.callback && (
               <p className="text-sm text-muted-foreground">{t('sign.callbackNotice')}</p>
             )}
-            {error != null && <p className="text-destructive text-sm">{error}</p>}
+            {failed && error != null && (
+              <div className="flex items-start gap-3 p-3 rounded-lg border border-destructive/50 bg-destructive/10">
+                <XCircle className="size-8 shrink-0 text-destructive" aria-hidden />
+                <p className="text-sm text-destructive">{error}</p>
+              </div>
+            )}
             <div className="flex gap-2">
               <Button type="button" onClick={handleApprove} disabled={loading}>
                 {parsed.params?.no_broadcast ? t('common.sign') : t('common.approve')}

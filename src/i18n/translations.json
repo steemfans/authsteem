@@ -1,6 +1,7 @@
 {
   "en": {
     "common": {
+      "back": "Back",
       "backToHome": "Back to Home",
       "login": "Log in",
       "import": "Import account",
@@ -46,6 +47,7 @@
       "keychainPasswordHint": "A password you choose to encrypt your keys in this browser. Remember it — you will need it to unlock the account when signing. Minimum 8 characters.",
       "keychainConfirm": "Confirm keychain password",
       "keychainConfirmHint": "Re-enter the keychain password to confirm.",
+      "importAndLogin": "Import and log in",
       "loginInstead": "Log in instead",
       "errorRequired": "Username and password (or private key) are required.",
       "errorInvalid": "Invalid credentials.",
@@ -77,13 +79,21 @@
       "invalidUrl": "Invalid signing URL.",
       "broadcastTitle": "Transaction broadcast",
       "txId": "Transaction ID: {{id}}",
+      "blockNum": "Block: {{block}}",
       "callbackNotice": "You will be redirected after signing.",
       "authorityNotice": "This transaction requires your {{authority}} key.",
       "continueToLogin": "Continue to login"
     },
     "dashboard": {
       "title": "Dashboard",
-      "welcome": "Welcome, {{username}}"
+      "welcome": "Welcome, {{username}}",
+      "tabUserInfo": "User info",
+      "tabSignData": "Sign data",
+      "signPlaceholder": "Paste Steem URI signing data here (e.g. steem://sign/ops/...)",
+      "paste": "Paste",
+      "signAndBroadcast": "Sign and broadcast",
+      "signResultTitle": "Broadcast result",
+      "signAgain": "Sign again"
     },
     "notFound": {
       "title": "404",
@@ -107,6 +117,7 @@
   },
   "zh": {
     "common": {
+      "back": "返回",
       "backToHome": "返回首页",
       "login": "登录",
       "import": "导入账户",
@@ -152,6 +163,7 @@
       "keychainPasswordHint": "您设置的、用于在本浏览器中加密密钥的密码。请牢记，签名解锁账户时需要输入。至少 8 个字符。",
       "keychainConfirm": "确认钥匙串密码",
       "keychainConfirmHint": "请再次输入钥匙串密码以确认。",
+      "importAndLogin": "导入并登录",
       "loginInstead": "改为登录",
       "errorRequired": "用户名和密码（或私钥）为必填项。",
       "errorInvalid": "凭证无效。",
@@ -183,13 +195,21 @@
       "invalidUrl": "签名 URL 无效。",
       "broadcastTitle": "交易已广播",
       "txId": "交易 ID: {{id}}",
+      "blockNum": "区块: {{block}}",
       "callbackNotice": "签名后您将被重定向。",
       "authorityNotice": "此交易需要您的 {{authority}} 密钥。",
       "continueToLogin": "继续登录"
     },
     "dashboard": {
       "title": "控制台",
-      "welcome": "欢迎，{{username}}"
+      "welcome": "欢迎，{{username}}",
+      "tabUserInfo": "用户信息",
+      "tabSignData": "签名数据",
+      "signPlaceholder": "在此粘贴 Steem URI 格式的待签名数据（如 steem://sign/ops/...）",
+      "paste": "粘贴",
+      "signAndBroadcast": "签名广播",
+      "signResultTitle": "广播结果",
+      "signAgain": "继续签名"
     },
     "notFound": {
       "title": "404",

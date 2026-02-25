@@ -37,7 +37,7 @@ export function OperationValue({
   const displayValue = value ?? schema.defaultValue
 
   if (displayValue === '__signer') {
-    return <span className="italic">{username ? username : 'you'}</span>
+    return <span className="italic text-foreground">{username ? username : 'you'}</span>
   }
 
   if (displayValue === null || displayValue === undefined || displayValue === '') {
@@ -74,9 +74,9 @@ export function OperationValue({
         </a>
       )
     case 'amount':
-      return <span>{formatAmount(String(displayValue), vestsToSP)}</span>
+      return <span className="text-foreground">{formatAmount(String(displayValue), vestsToSP)}</span>
     case 'bool':
-      return <span>{String(displayValue)}</span>
+      return <span className="text-foreground">{String(displayValue)}</span>
     case 'json':
       return (
         <pre className="text-xs bg-muted p-2 rounded mt-1 max-h-32 overflow-auto inline-block">
@@ -84,8 +84,8 @@ export function OperationValue({
         </pre>
       )
     case 'time':
-      return <span>{formatTime(displayValue as string | number)}</span>
+      return <span className="text-foreground">{formatTime(displayValue as string | number)}</span>
     default:
-      return <span>{String(displayValue)}</span>
+      return <span className="text-foreground">{String(displayValue)}</span>
   }
 }
