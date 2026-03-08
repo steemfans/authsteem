@@ -19,7 +19,7 @@ export function Home() {
       <nav className="mt-8 flex gap-4 text-sm text-muted-foreground">
         <Link to="/login" className="hover:text-foreground">{t('common.login')}</Link>
         <Link to="/settings" className="hover:text-foreground">{t('nav.settings')}</Link>
-        <Link to="/dev-tools/broadcast-op" className="hover:text-foreground">{t('nav.devTools')}</Link>
+        <Link to="/dev-tools" className="hover:text-foreground">{t('nav.devTools')}</Link>
       </nav>
     </div>
   )
