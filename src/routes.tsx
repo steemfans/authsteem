@@ -7,6 +7,8 @@ import { Login } from '@/pages/Login'
 import { Sign } from '@/pages/Sign'
 import { Settings } from '@/pages/Settings'
 import { BroadcastOp } from '@/pages/BroadcastOp'
+import { DevTools } from '@/pages/DevTools'
+import { SteemUriTest } from '@/pages/SteemUriTest'
 import { NotFound } from '@/pages/NotFound'
 import { useAuthStore } from '@/stores/auth'
 import { hasAccounts } from '@/lib/keychain'
@@ -44,7 +46,9 @@ const router = createBrowserRouter([
       },
       { path: 'sign/*', element: <Sign /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'dev-tools', element: <DevTools /> },
       { path: 'dev-tools/broadcast-op', element: <BroadcastOp /> },
+      { path: 'dev-tools/steem-uri-test', element: <SteemUriTest /> },
       { path: '*', element: <NotFound /> },
     ],
   },

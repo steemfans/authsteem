@@ -107,6 +107,40 @@
       "openSign": "Open sign page",
       "opening": "Opening…"
     },
+    "steemUriTest": {
+      "title": "Steem URI Test",
+      "description": "Convert between ops (JSON array) and steem:// URI.",
+      "typeLabel": "Input type",
+      "type": {
+        "op": "op",
+        "ops": "ops",
+        "tx": "tx"
+      },
+      "inputLabel": "Input",
+      "inputPlaceholder": {
+        "op": "Single op: [\"vote\", {\"voter\":\"a\",\"author\":\"b\",...}]",
+        "ops": "Ops array: [[\"vote\", {...}], ...] or steem URI",
+        "tx": "Transaction: {\"operations\": [...], \"ref_block_num\": ..., ...} or steem URI"
+      },
+      "outputLabel": "Output",
+      "toUri": {
+        "op": "op ⇒ steem URI",
+        "ops": "ops ⇒ steem URI",
+        "tx": "tx ⇒ steem URI"
+      },
+      "toInput": {
+        "op": "steem URI ⇒ op",
+        "ops": "steem URI ⇒ ops",
+        "tx": "steem URI ⇒ tx"
+      },
+      "backToDevTools": "Back to Dev Tools"
+    },
+    "devTools": {
+      "indexTitle": "Dev Tools",
+      "indexDescription": "Developer utilities for Steem signing and URI handling.",
+      "open": "Open",
+      "backToDevTools": "Back to Dev Tools"
+    },
     "nav": {
       "home": "Home",
       "dashboard": "Dashboard",
@@ -222,6 +256,40 @@
       "selectOneOp": "选择一项操作",
       "openSign": "打开签名页",
       "opening": "正在打开…"
+    },
+    "steemUriTest": {
+      "title": "Steem URI 测试",
+      "description": "在 op / ops / tx 与 steem:// URI 之间互相转换。",
+      "typeLabel": "输入类型",
+      "type": {
+        "op": "op",
+        "ops": "ops",
+        "tx": "tx"
+      },
+      "inputLabel": "输入",
+      "inputPlaceholder": {
+        "op": "单个 op：[\"vote\", {\"voter\":\"a\",\"author\":\"b\",...}]",
+        "ops": "ops 数组：[[\"vote\", {...}], ...] 或 steem URI",
+        "tx": "交易对象：{\"operations\": [...], \"ref_block_num\": ..., ...} 或 steem URI"
+      },
+      "outputLabel": "输出",
+      "toUri": {
+        "op": "op ⇒ steem URI",
+        "ops": "ops ⇒ steem URI",
+        "tx": "tx ⇒ steem URI"
+      },
+      "toInput": {
+        "op": "steem URI ⇒ op",
+        "ops": "steem URI ⇒ ops",
+        "tx": "steem URI ⇒ tx"
+      },
+      "backToDevTools": "返回开发工具"
+    },
+    "devTools": {
+      "indexTitle": "开发工具",
+      "indexDescription": "Steem 签名与 URI 相关开发小工具。",
+      "open": "进入",
+      "backToDevTools": "返回开发工具"
     },
     "nav": {
       "home": "首页",

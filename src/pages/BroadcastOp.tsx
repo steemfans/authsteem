@@ -171,6 +171,8 @@ export function BroadcastOp() {
           </form>
       </div>
       <p className="mt-4 text-center text-sm text-muted-foreground">
+        <Link to="/dev-tools" className="underline">{t('devTools.backToDevTools')}</Link>
+        {' · '}
         <Link to="/" className="underline">
           {t('common.backToHome')}
         </Link>
