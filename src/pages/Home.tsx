@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
 import { useTranslation } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 export function Home() {
   const { t } = useTranslation()
+  const username = useAuthStore((s) => s.username)
 
   return (
     <div className="w-full max-w-xl mx-auto text-center flex flex-col items-center justify-center">
@@ -16,11 +17,15 @@ export function Home() {
       <p className="text-muted-foreground mb-8 max-w-md">
         {t('home.heroDescription')}
       </p>
-      <nav className="mt-8 flex gap-4 text-sm text-muted-foreground">
-        <Link to="/login" className="hover:text-foreground">{t('common.login')}</Link>
-        <Link to="/settings" className="hover:text-foreground">{t('nav.settings')}</Link>
-        <Link to="/dev-tools" className="hover:text-foreground">{t('nav.devTools')}</Link>
-      </nav>
+      {username ? (
+        <p className="text-muted-foreground mb-8">
+          {t('home.loggedInAs', { username })}
+        </p>
+      ) : (
+        <p className="text-muted-foreground mb-8">
+          {t('home.importOrLogin')}
+        </p>
+      )}
     </div>
   )
 }
