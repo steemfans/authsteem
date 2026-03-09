@@ -56,7 +56,7 @@ export function Login() {
       if (pathPart !== null) {
         navigate(`/sign/${pathPart}${authority !== 'active' ? `?authority=${authority}` : ''}`)
       } else {
-        navigate('/')
+        navigate('/dashboard')
       }
     } catch (err) {
       setError(t('login.errorInvalid'))
