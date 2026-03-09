@@ -356,7 +356,13 @@ export function Dashboard() {
                     {t('dashboard.paste')}
                   </Button>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <Link
+                    to="/dev-tools/steem-uri-test"
+                    className="text-sm text-muted-foreground hover:text-foreground underline"
+                  >
+                    {t('steemUriTest.title')}
+                  </Link>
                   <Button
                     type="button"
                     onClick={handleSignAndBroadcast}
