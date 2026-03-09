@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth'
 import { useSettingsStore } from '@/stores/settings'
 import { useTranslation } from '@/i18n'
@@ -99,7 +100,9 @@ type TabId = 'user' | 'sign'
 
 export function Dashboard() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const username = useAuthStore((s) => s.username)
+  const logout = useAuthStore((s) => s.logout)
   const account = useAuthStore((s) => s.account)
   const signTx = useAuthStore((s) => s.signTx)
   const properties = useSettingsStore((s) => s.properties) as Record<string, unknown>
@@ -171,9 +174,30 @@ export function Dashboard() {
 
   return (
     <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
-      <div>
-        <div className="leading-none font-semibold">{t('dashboard.title')}</div>
-        <p className="text-muted-foreground text-sm mt-2">{t('dashboard.welcome', { username: username ?? '' })}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="leading-none font-semibold">{t('dashboard.title')}</div>
+          <p className="text-muted-foreground text-sm mt-2">{t('dashboard.welcome', { username: username ?? '' })}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="text-sm text-muted-foreground hover:text-foreground underline"
+          >
+            {t('nav.home')}
+          </Link>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              logout()
+              navigate('/')
+            }}
+          >
+            {t('nav.logout')}
+          </Button>
+        </div>
       </div>
 
       <div className="flex border-b border-border">
@@ -332,7 +356,13 @@ export function Dashboard() {
                     {t('dashboard.paste')}
                   </Button>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <Link
+                    to="/dev-tools/steem-uri-test"
+                    className="text-sm text-muted-foreground hover:text-foreground underline"
+                  >
+                    {t('steemUriTest.title')}
+                  </Link>
                   <Button
                     type="button"
                     onClick={handleSignAndBroadcast}
