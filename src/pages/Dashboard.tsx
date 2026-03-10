@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth'
 import { useSettingsStore } from '@/stores/settings'
 import { useTranslation } from '@/i18n'
-import { CheckCircle, XCircle } from 'lucide-react'
+import { CheckCircle, XCircle, RefreshCw } from 'lucide-react'
 import { decode, resolveTransaction } from '@/lib/steem-uri'
 import { broadcastTransaction } from '@/lib/steem'
 import { Button } from '@/components/ui/button'
@@ -104,10 +104,12 @@ export function Dashboard() {
   const username = useAuthStore((s) => s.username)
   const logout = useAuthStore((s) => s.logout)
   const account = useAuthStore((s) => s.account)
+  const loadAccount = useAuthStore((s) => s.loadAccount)
   const signTx = useAuthStore((s) => s.signTx)
   const properties = useSettingsStore((s) => s.properties) as Record<string, unknown>
 
   const [tab, setTab] = useState<TabId>('user')
+  const [userInfoRefreshLoading, setUserInfoRefreshLoading] = useState(false)
   const [uriText, setUriText] = useState('')
   const [signLoading, setSignLoading] = useState(false)
   const [signError, setSignError] = useState<string | null>(null)
@@ -172,6 +174,15 @@ export function Dashboard() {
     setUriText('')
   }
 
+  async function handleRefreshUserInfo() {
+    setUserInfoRefreshLoading(true)
+    try {
+      await loadAccount()
+    } finally {
+      setUserInfoRefreshLoading(false)
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto w-full flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -222,6 +233,18 @@ export function Dashboard() {
           <div className="text-sm text-muted-foreground">{t('common.loading')}</div>
         ) : (
           <div className="space-y-6">
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRefreshUserInfo}
+              disabled={userInfoRefreshLoading}
+            >
+              <RefreshCw className={`size-4 mr-1.5 ${userInfoRefreshLoading ? 'animate-spin' : ''}`} aria-hidden />
+              {userInfoRefreshLoading ? t('common.loading') : t('dashboard.refresh')}
+            </Button>
+          </div>
           <div className="border rounded-lg overflow-hidden">
             <div className="px-3 py-2 bg-muted/50 border-b">
               <div className="text-sm font-medium">Balances</div>
