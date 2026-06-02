@@ -11,10 +11,18 @@ const SIGN_PAYLOAD_REGEX = /^(ops|op|tx)\/[A-Za-z0-9_.-]+$/
 
 /**
  * Returns true if pathMatch (the part after /sign/) is safe: type is ops/op/tx and
- * payload segment contains only base64url chars. Rejects '..', control chars, and extra slashes.
+ * payload segment contains only base64url chars. Rejects path traversal ('..' as a
+ * segment), control chars, and extra slashes. Note: base64u padding '..' at the end
+ * of the payload is allowed (it is not a path-traversal segment).
  */
 export function isValidSignPath(pathMatch: string): boolean {
-  if (!pathMatch || pathMatch.includes('..') || /[\0\r\n]/.test(pathMatch)) {
+  if (!pathMatch || /[\0\r\n]/.test(pathMatch)) {
+    return false
+  }
+  // Reject '..' only when it appears as a standalone path segment (path traversal),
+  // not as base64u padding inside the payload string.
+  const segments = pathMatch.split('/')
+  if (segments.some((s) => s === '..')) {
     return false
   }
   return SIGN_PAYLOAD_REGEX.test(pathMatch.trim())
@@ -29,7 +37,10 @@ export function sanitizeRedirectPath(redirectUri: string): string | null {
     return null
   }
   const pathPart = redirectUri.replace(/^steem:\/\/sign\//, '').trim()
-  if (pathPart.includes('..') || /[\0\r\n]/.test(pathPart)) {
+  // Reject '..' only when it appears as a standalone path segment (path traversal),
+  // not as base64u padding inside the payload string.
+  const segments = pathPart.split('/')
+  if (segments.some((s) => s === '..') || /[\0\r\n]/.test(pathPart)) {
     return null
   }
   if (!SIGN_PAYLOAD_REGEX.test(pathPart)) {
