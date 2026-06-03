@@ -33,7 +33,14 @@
       "loggingIn": "Logging in…",
       "errorRequired": "Username and keychain password are required.",
       "errorNotFound": "Account not found in keychain.",
-      "errorInvalid": "Invalid keychain password or credentials."
+      "errorInvalid": "Invalid keychain password or credentials.",
+      "savedAccountsTitle": "Saved on this device",
+      "savedAccountsDescription": "Encrypted keys stored in this browser. Removing an account only deletes local data.",
+      "removeFromDevice": "Remove",
+      "removeFromDeviceAria": "Remove {{username}} from this device",
+      "removeConfirmTitle": "Remove saved account?",
+      "removeConfirmDescription": "Remove @{{username}} from this browser? Your Steem account on the blockchain is not affected. You can import again later.",
+      "removeConfirmAction": "Remove from device"
     },
     "import": {
       "title": "Import account",
@@ -185,7 +192,14 @@
       "loggingIn": "正在登录…",
       "errorRequired": "用户名和钥匙串密码为必填项。",
       "errorNotFound": "未在钥匙串中找到该账户。",
-      "errorInvalid": "钥匙串密码或凭证无效。"
+      "errorInvalid": "钥匙串密码或凭证无效。",
+      "savedAccountsTitle": "本机已保存的账户",
+      "savedAccountsDescription": "密钥已加密保存在本浏览器中。移除仅删除本地数据。",
+      "removeFromDevice": "移除",
+      "removeFromDeviceAria": "从本机移除 {{username}}",
+      "removeConfirmTitle": "移除已保存的账户？",
+      "removeConfirmDescription": "从本浏览器移除 @{{username}}？链上 Steem 账户不受影响，之后可重新导入。",
+      "removeConfirmAction": "从本机移除"
     },
     "import": {
       "title": "导入账户",
