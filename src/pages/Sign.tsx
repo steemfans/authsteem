@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { KeychainLoginForm } from '@/components/KeychainLoginForm'
+import { ImportForm } from '@/components/ImportForm'
 import { OperationItem } from '@/components/Operation'
 import { useTranslation } from '@/i18n'
 
@@ -36,7 +37,9 @@ export function Sign() {
   const [blockNum, setBlockNum] = useState<number | null>(null)
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [loginOpen, setLoginOpen] = useState(false)
+  const [authDialogOpen, setAuthDialogOpen] = useState(false)
+  const [authDialogMode, setAuthDialogMode] = useState<'login' | 'import'>('login')
+  const [keychainRevision, setKeychainRevision] = useState(0)
 
   const pathSafe = isValidSignPath(pathMatch)
   const uri = pathSafe
@@ -172,11 +175,8 @@ export function Sign() {
               type="button"
               variant="default"
               onClick={() => {
-                if (hasAccounts()) {
-                  setLoginOpen(true)
-                } else {
-                  navigate('/import')
-                }
+                setAuthDialogMode(hasAccounts() ? 'login' : 'import')
+                setAuthDialogOpen(true)
               }}
             >
               {t('sign.continueToLogin')}
@@ -184,19 +184,46 @@ export function Sign() {
             <Button type="button" variant="outline" onClick={() => navigate(-1)}>
               {t('common.back')}
             </Button>
-            <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
-              <DialogContent>
+            <Dialog
+              open={authDialogOpen}
+              onOpenChange={(open) => {
+                setAuthDialogOpen(open)
+                if (!open) setAuthDialogMode(hasAccounts() ? 'login' : 'import')
+              }}
+            >
+              <DialogContent className="max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>{t('login.title')}</DialogTitle>
-                  <DialogDescription>{t('sign.loginDialogDescription')}</DialogDescription>
+                  <DialogTitle>
+                    {authDialogMode === 'login' ? t('login.title') : t('import.title')}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {authDialogMode === 'login'
+                      ? t('sign.loginDialogDescription')
+                      : t('sign.importDialogDescription')}
+                  </DialogDescription>
                 </DialogHeader>
-                <KeychainLoginForm
-                  idPrefix="sign-login"
-                  preferredUsername={
-                    typeof parsed.params?.signer === 'string' ? parsed.params.signer : undefined
-                  }
-                  onSuccess={() => setLoginOpen(false)}
-                />
+                {authDialogMode === 'login' ? (
+                  <KeychainLoginForm
+                    idPrefix="sign-login"
+                    preferredUsername={
+                      typeof parsed.params?.signer === 'string' ? parsed.params.signer : undefined
+                    }
+                    keychainRevision={keychainRevision}
+                    onImportClick={() => setAuthDialogMode('import')}
+                    onSuccess={() => setAuthDialogOpen(false)}
+                  />
+                ) : (
+                  <ImportForm
+                    idPrefix="sign-import"
+                    requiredAuthority={authority}
+                    showLoginLink={hasAccounts()}
+                    onLoginClick={() => setAuthDialogMode('login')}
+                    onSuccess={() => {
+                      setKeychainRevision((n) => n + 1)
+                      setAuthDialogOpen(false)
+                    }}
+                  />
+                )}
               </DialogContent>
             </Dialog>
           </div>
