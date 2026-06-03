@@ -82,7 +82,8 @@
       "blockNum": "Block: {{block}}",
       "callbackNotice": "You will be redirected after signing.",
       "authorityNotice": "This transaction requires your {{authority}} key.",
-      "continueToLogin": "Continue to login"
+      "continueToLogin": "Continue to login",
+      "loginDialogDescription": "Log in to review and sign this transaction."
     },
     "dashboard": {
       "title": "Dashboard",
@@ -233,7 +234,8 @@
       "blockNum": "区块: {{block}}",
       "callbackNotice": "签名后您将被重定向。",
       "authorityNotice": "此交易需要您的 {{authority}} 密钥。",
-      "continueToLogin": "继续登录"
+      "continueToLogin": "继续登录",
+      "loginDialogDescription": "登录后即可查看并签名此交易。"
     },
     "dashboard": {
       "title": "控制台",
