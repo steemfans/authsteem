@@ -22,8 +22,10 @@ interface KeychainLoginFormProps {
   preferredUsername?: string
   /** Prefix for input ids when multiple forms may exist on one page. */
   idPrefix?: string
-  /** Show link to import page below the form. */
+  /** Show link to import below the form. */
   showImportLink?: boolean
+  /** Switch to import in-place (e.g. sign dialog) instead of navigating to /import. */
+  onImportClick?: () => void
   /** Bump to reload accounts after keychain changes (e.g. remove on Login page). */
   keychainRevision?: number
 }
@@ -33,6 +35,7 @@ export function KeychainLoginForm({
   preferredUsername,
   idPrefix = 'login',
   showImportLink = true,
+  onImportClick,
   keychainRevision = 0,
 }: KeychainLoginFormProps) {
   const { t } = useTranslation()
@@ -127,9 +130,15 @@ export function KeychainLoginForm({
       </form>
       {showImportLink && (
         <p className="text-center text-sm text-muted-foreground">
-          <Link to="/import" className="underline">
-            {t('common.import')}
-          </Link>
+          {onImportClick ? (
+            <button type="button" onClick={onImportClick} className="underline">
+              {t('common.import')}
+            </button>
+          ) : (
+            <Link to="/import" className="underline">
+              {t('common.import')}
+            </Link>
+          )}
         </p>
       )}
     </div>
