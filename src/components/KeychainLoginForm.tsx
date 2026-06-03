@@ -24,6 +24,8 @@ interface KeychainLoginFormProps {
   idPrefix?: string
   /** Show link to import page below the form. */
   showImportLink?: boolean
+  /** Bump to reload accounts after keychain changes (e.g. remove on Login page). */
+  keychainRevision?: number
 }
 
 export function KeychainLoginForm({
@@ -31,6 +33,7 @@ export function KeychainLoginForm({
   preferredUsername,
   idPrefix = 'login',
   showImportLink = true,
+  keychainRevision = 0,
 }: KeychainLoginFormProps) {
   const { t } = useTranslation()
   const login = useAuthStore((s) => s.login)
@@ -44,13 +47,16 @@ export function KeychainLoginForm({
     const stored = getKeychain()
     setKeychain(stored)
     const usernames = Object.keys(stored)
-    if (usernames.length === 0) return
+    if (usernames.length === 0) {
+      setUsername('')
+      return
+    }
     if (preferredUsername && stored[preferredUsername]) {
       setUsername(preferredUsername)
       return
     }
-    setUsername((current) => current || usernames[0])
-  }, [preferredUsername])
+    setUsername((current) => (current && stored[current] ? current : usernames[0]))
+  }, [preferredUsername, keychainRevision])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
