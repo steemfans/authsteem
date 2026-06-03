@@ -14,6 +14,7 @@ interface CondenserAccount {
 }
 
 export interface KeysMap {
+  owner: string | null
   active: string | null
   posting: string | null
   memo: string | null
@@ -51,7 +52,7 @@ export async function credentialsValid(username: string, password: string): Prom
     const pubkey = auth.wifToPublic(password)
     return !!keysMap[pubkey]
   }
-  const privKeys = auth.getPrivateKeys(username, password, ['active', 'posting', 'memo'])
+  const privKeys = auth.getPrivateKeys(username, password, ['owner', 'active', 'posting', 'memo'])
   const activePub = privKeys.activePubkey ?? privKeys.active
   return !!(activePub && keysMap[activePub])
 }
@@ -59,7 +60,7 @@ export async function credentialsValid(username: string, password: string): Prom
 /** Get keys { active, posting, memo } - password can be account password or WIF. */
 export async function getKeys(username: string, password: string): Promise<KeysMap> {
   const accounts = await getAccountsCondenser([username])
-  const keys: KeysMap = { active: null, posting: null, memo: null }
+  const keys: KeysMap = { owner: null, active: null, posting: null, memo: null }
   if (!accounts.length) return keys
 
   const account = accounts[0] as CondenserAccount
@@ -69,13 +70,16 @@ export async function getKeys(username: string, password: string): Promise<KeysM
   if (auth.isWif(password)) {
     const pubkey = auth.wifToPublic(password)
     const type = keysMap[pubkey] as keyof KeysMap | undefined
-    if (type && (type === 'active' || type === 'posting' || type === 'memo')) {
+    if (type && (type === 'owner' || type === 'active' || type === 'posting' || type === 'memo')) {
       keys[type] = password
     }
     return keys
   }
 
-  const privKeys = auth.getPrivateKeys(username, password, ['active', 'posting', 'memo'])
+  const privKeys = auth.getPrivateKeys(username, password, ['owner', 'active', 'posting', 'memo'])
+  if (privKeys.ownerPubkey && keysMap[privKeys.ownerPubkey] === 'owner') {
+    keys.owner = privKeys.owner ?? null
+  }
   keys.active = privKeys.active ?? null
   keys.posting = privKeys.posting ?? null
   if (privKeys.memoPubkey && keysMap[privKeys.memoPubkey] === 'memo') {
@@ -85,6 +89,6 @@ export async function getKeys(username: string, password: string): Promise<KeysM
 }
 
 export function getAuthority(str: string | undefined, fallback: string): string {
-  if (str && ['active', 'posting'].includes(str)) return str
+  if (str && ['owner', 'active', 'posting'].includes(str)) return str
   return fallback
 }

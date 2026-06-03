@@ -3,8 +3,8 @@
  * open redirect, and injection (XSS / unsafe URLs).
  */
 
-/** Allowed authority values for signing (subset of Steem key types). */
-export const ALLOWED_AUTHORITIES = ['active', 'posting'] as const
+/** Allowed authority values for signing (Steem key roles). */
+export const ALLOWED_AUTHORITIES = ['owner', 'active', 'posting'] as const
 
 /** Type + payload: ops|op|tx and base64url chars only (incl. '.' for padding). */
 const SIGN_PAYLOAD_REGEX = /^(ops|op|tx)\/[A-Za-z0-9_.-]+$/

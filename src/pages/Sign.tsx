@@ -4,7 +4,7 @@ import { decode, resolveTransaction, resolveCallback, type ParsedSteemUri } from
 import { isValidSignPath } from '@/lib/sign-path'
 import { broadcastTransaction } from '@/lib/steem'
 import { useAuthStore } from '@/stores/auth'
-import { getAuthority } from '@/lib/auth'
+import { resolveSigningAuthority } from '@/lib/signing-authority'
 import type { KeysMap } from '@/lib/auth'
 import { hasAccounts } from '@/lib/keychain'
 import { CheckCircle, XCircle } from 'lucide-react'
@@ -29,7 +29,6 @@ export function Sign() {
   const username = useAuthStore((s) => s.username)
   const keys = useAuthStore((s) => s.keys)
   const signTx = useAuthStore((s) => s.signTx)
-  const authority = getAuthority(searchParams.get('authority') ?? undefined, 'active')
   const [parsed, setParsed] = useState<ParsedSteemUri | null>(null)
   const [uriValid, setUriValid] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -69,7 +68,13 @@ export function Sign() {
     }
   }, [uri, pathSafe])
 
-  const hasRequiredKey = username && ((keys as KeysMap)[authority as keyof KeysMap] ?? keys.active)
+  const authority = resolveSigningAuthority(
+    parsed?.tx?.operations ?? [],
+    searchParams.get('authority')
+  )
+
+  const hasRequiredKey =
+    username && !!(keys as KeysMap)[authority as keyof KeysMap]
 
   async function handleApprove() {
     if (!parsed || !username) return
