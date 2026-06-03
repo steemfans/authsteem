@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react'
-import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { decode, resolveTransaction, resolveCallback, type ParsedSteemUri } from '@/lib/steem-uri'
 import { isValidSignPath } from '@/lib/sign-path'
 import { broadcastTransaction } from '@/lib/steem'
 import { useAuthStore } from '@/stores/auth'
 import { getAuthority } from '@/lib/auth'
 import type { KeysMap } from '@/lib/auth'
+import { hasAccounts } from '@/lib/keychain'
 import { CheckCircle, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { KeychainLoginForm } from '@/components/KeychainLoginForm'
 import { OperationItem } from '@/components/Operation'
 import { useTranslation } from '@/i18n'
 
@@ -28,6 +37,7 @@ export function Sign() {
   const [blockNum, setBlockNum] = useState<number | null>(null)
   const [failed, setFailed] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [loginOpen, setLoginOpen] = useState(false)
 
   const pathSafe = isValidSignPath(pathMatch)
   const uri = pathSafe
@@ -153,14 +163,37 @@ export function Sign() {
         ) : null}
         {!username || !hasRequiredKey ? (
           <div className="flex gap-2 flex-wrap">
-            <Button asChild variant="default">
-              <Link to={`/login?redirect=${encodeURIComponent(uri)}&authority=${authority}`}>
-                {t('sign.continueToLogin')}
-              </Link>
+            <Button
+              type="button"
+              variant="default"
+              onClick={() => {
+                if (hasAccounts()) {
+                  setLoginOpen(true)
+                } else {
+                  navigate('/import')
+                }
+              }}
+            >
+              {t('sign.continueToLogin')}
             </Button>
             <Button type="button" variant="outline" onClick={() => navigate(-1)}>
               {t('common.back')}
             </Button>
+            <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t('login.title')}</DialogTitle>
+                  <DialogDescription>{t('sign.loginDialogDescription')}</DialogDescription>
+                </DialogHeader>
+                <KeychainLoginForm
+                  idPrefix="sign-login"
+                  preferredUsername={
+                    typeof parsed.params?.signer === 'string' ? parsed.params.signer : undefined
+                  }
+                  onSuccess={() => setLoginOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         ) : (
           <>

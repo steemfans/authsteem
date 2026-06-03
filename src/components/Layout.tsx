@@ -1,15 +1,25 @@
 import { useEffect } from 'react'
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom'
+import { buildSignReturnPath } from '@/lib/sign-path'
 import { sendPageView } from '@/lib/gtag'
 import { useAuthStore } from '@/stores/auth'
 import { useTranslation } from '@/i18n'
 
 export function Layout() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const username = useAuthStore((s) => s.username)
   const logout = useAuthStore((s) => s.logout)
   const { t } = useTranslation()
+
+  const loginHref = (() => {
+    if (!pathname.startsWith('/sign/')) return '/login'
+    const pathMatch = pathname.slice('/sign/'.length)
+    const uri = `steem://sign/${pathMatch}${search}`
+    const returnPath = buildSignReturnPath(uri, 'active')
+    if (!returnPath) return '/login'
+    return `/login?redirect=${encodeURIComponent(uri)}`
+  })()
 
   useEffect(() => {
     sendPageView(pathname)
@@ -44,7 +54,7 @@ export function Layout() {
               </button>
             </>
           ) : (
-            <Link to="/login" className="hover:text-foreground">
+            <Link to={loginHref} className="hover:text-foreground">
               {t('common.login')}
             </Link>
           )}
