@@ -16,13 +16,13 @@ interface AuthState {
   login: (username: string, keys: KeysMap) => Promise<void>
   logout: () => void
   loadAccount: () => Promise<void>
-  /** Sign tx with given authority (active | posting | memo); returns signed tx. */
+  /** Sign tx with given authority (owner | active | posting | memo); returns signed tx. */
   signTx: (tx: unknown, authority: string) => Promise<unknown>
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   username: null,
-  keys: { active: null, posting: null, memo: null },
+  keys: { owner: null, active: null, posting: null, memo: null },
   account: null,
 
   login: async (username, keys) => {
@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    set({ username: null, keys: { active: null, posting: null, memo: null }, account: null })
+    set({ username: null, keys: { owner: null, active: null, posting: null, memo: null }, account: null })
   },
 
   loadAccount: async () => {
@@ -48,8 +48,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signTx: async (tx, authority) => {
     const { keys } = get()
-    const wif = (authority && keys[authority as keyof KeysMap]) ?? keys.active ?? keys.posting ?? keys.memo
-    if (!wif) throw new Error('No key for authority')
+    const role = authority as keyof KeysMap
+    const wif = keys[role]
+    if (!wif) throw new Error(`No key for authority: ${authority}`)
     const { signTransaction } = await import('@/lib/steem')
     return signTransaction(tx, [wif])
   },
