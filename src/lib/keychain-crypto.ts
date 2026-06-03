@@ -4,6 +4,7 @@
  */
 
 export interface KeysPayload {
+  owner: string | null
   active: string | null
   posting: string | null
   memo: string | null
@@ -133,8 +134,13 @@ export async function decryptKeys(
       ciphertextBuffer
     )
 
-    const keys = JSON.parse(new TextDecoder().decode(decrypted)) as KeysPayload
-    return keys
+    const raw = JSON.parse(new TextDecoder().decode(decrypted)) as Partial<KeysPayload>
+    return {
+      owner: raw.owner ?? null,
+      active: raw.active ?? null,
+      posting: raw.posting ?? null,
+      memo: raw.memo ?? null,
+    }
   } catch (err) {
     throw new Error(`Decryption failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
   }

@@ -29,4 +29,11 @@ describe('sign-path', () => {
       `/sign/${SAMPLE_OPS_PATH}?s=ety001&authority=posting`
     )
   })
+
+  it('buildSignReturnPath appends owner authority when needed', () => {
+    const uri = `steem://sign/${SAMPLE_OPS_PATH}?s=ety001`
+    expect(buildSignReturnPath(uri, 'owner')).toBe(
+      `/sign/${SAMPLE_OPS_PATH}?s=ety001&authority=owner`
+    )
+  })
 })
