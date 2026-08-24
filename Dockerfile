@@ -1,8 +1,8 @@
 # Build stage: Node to produce dist/
 FROM node:22-alpine AS builder
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
-COPY package.json pnpm-lock.yaml* ./
+RUN corepack enable && corepack prepare pnpm@11.17.0 --activate
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
