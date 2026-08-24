@@ -1,0 +1,25 @@
+packages:
+  - '.'
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+
+# Security overrides for transitive dependencies (Dependabot alerts).
+# elliptic has no patched release (GHSA for <= 6.6.1) and cannot be fixed here.
+overrides:
+  '@babel/core@7': '7.29.6'
+  'bn.js@4': '4.12.3'
+  'bn.js@5': '5.2.3'
+  'brace-expansion@1': '1.1.17'
+  'brace-expansion@2': '2.1.4'
+  'esbuild@>=0.27.0 <0.28.1': '0.28.2'
+  'flatted@3': '3.4.2'
+  'js-yaml@4': '4.3.1'
+  'minimatch@3': '3.1.3'
+  'minimatch@9': '9.0.7'
+  'nanoid@3': '3.3.18'
+  'postcss@8': '8.5.23'
+  'sharp@<0.35.0': '0.35.3'
+  'undici@7': '7.29.0'
