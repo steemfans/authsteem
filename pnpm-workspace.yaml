@@ -7,11 +7,8 @@ allowBuilds:
   workerd: true
 
 # Security overrides for transitive dependencies (Dependabot alerts).
-# elliptic has no patched release (GHSA for <= 6.6.1) and cannot be fixed here.
 overrides:
   '@babel/core@7': '7.29.6'
-  'bn.js@4': '4.12.3'
-  'bn.js@5': '5.2.3'
   'brace-expansion@1': '1.1.17'
   'brace-expansion@2': '2.1.4'
   'esbuild@>=0.27.0 <0.28.1': '0.28.2'
