@@ -6,6 +6,9 @@ allowBuilds:
   sharp: true
   workerd: true
 
+minimumReleaseAgeExclude:
+  - '@steemit/steem-uri@0.2.2'
+
 # Security overrides for transitive dependencies (Dependabot alerts).
 overrides:
   '@babel/core@7': '7.29.6'

@@ -29,8 +29,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@steemit/steem-uri':
-        specifier: 0.2.1
-        version: 0.2.1
+        specifier: 0.2.2
+        version: 0.2.2
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.5(@types/node@24.10.10)(jiti@2.6.1)(lightningcss@1.30.2))
@@ -1781,8 +1781,8 @@ packages:
     resolution: {integrity: sha512-YOh1lZDoQe3IiSW5WIzqFexnjMBI6S6GZ+P7gCrZZyxByS8e2MPUUzzUq8eoJEKFS5S/Z8KBLf45RUJIdJbkrQ==}
     engines: {node: '>=20.19.0'}
 
-  '@steemit/steem-uri@0.2.1':
-    resolution: {integrity: sha512-JBixY3q4JeUavehlIky+LkdpYcryaVgWG1E3JWQYaFAFmAWELFTAst6CVnEbweujSyr8tWeUrAleTQu/EQHSVQ==}
+  '@steemit/steem-uri@0.2.2':
+    resolution: {integrity: sha512-CIn856fRHtDVkckbKTSTfJpnsIzPBPFCXOp1L4JYSZ6BpDERi9OXHtU50UHQ7W6UUrclUx1/D0gHdZ/0iCAgpg==}
     engines: {node: '>=20'}
 
   '@tailwindcss/node@4.1.18':
@@ -4775,7 +4775,7 @@ snapshots:
       long: 5.3.2
       retry: 0.13.1
 
-  '@steemit/steem-uri@0.2.1': {}
+  '@steemit/steem-uri@0.2.2': {}
 
   '@tailwindcss/node@4.1.18':
     dependencies:
