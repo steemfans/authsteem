@@ -23,7 +23,7 @@
     "clsx": "^2.1.1",
     "lodash": "^4.18.1",
     "lucide-react": "^0.563.0",
-    "query-string": "^9.0.0",
+    "query-string": "^9.5.1",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -51,7 +51,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.5",
-    "vitest": "^4.1.0",
+    "vitest": "^4.1.12",
     "wrangler": "^4.125.0"
   }
 }
