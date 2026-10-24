@@ -36,9 +36,14 @@ jobs:
         with:
           context: .
           push: true
+          # `edge` is what the deployment script pulls (docker run of
+          # steemfans/authsteem:edge). CI only published latest/latest-<sha>,
+          # so that tag silently froze at an old build and never picked up
+          # later fixes. Keep it in step with master.
           tags: |
             steemfans/authsteem:latest
             steemfans/authsteem:latest-${{ steps.vars.outputs.short_sha }}
+            steemfans/authsteem:edge
       -
         name: Image digest
         run: echo ${{ steps.build.outputs.digest }}

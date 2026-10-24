@@ -17,12 +17,17 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11
+          # Keep in step with the pnpm version baked into the Docker build
+          # (Dockerfile: corepack prepare pnpm@11.17.0). A bare major drifts.
+          version: 11.17.0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Pinned rather than a floating major: actions/setup-node resolves a
+          # bare version from the runner's cache/toolcache, so the deploy could
+          # silently run on a different Node than the one the project targets.
+          node-version: 22.23.4
           cache: pnpm
 
       - name: Install dependencies
